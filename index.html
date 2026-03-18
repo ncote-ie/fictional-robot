@@ -2,59 +2,60 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* S'assure que le body prend toute la place sans marges */
         body { 
             margin: 0; 
+            padding: 0; 
             display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            font-family: 'Avenir Next', 'Arial', sans-serif;
-            background-color: transparent; 
+            justify-content: center; /* Centre horizontalement */
+            align-items: center;     /* Centre verticalement */
+            height: 100vh;           /* Prend toute la hauteur du widget */
+            font-family: 'Avenir Next', 'Arial', sans-serif; /* Police standard ArcGIS */
+            background-color: transparent; /* Fond transparent pour s'intégrer à votre app */
+            overflow: hidden;        /* Empêche les barres de défilement */
         }
-        .container {
-            text-align: center;
-            background: #ffffff;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            width: 200px;
+
+        /* Style des chiffres uniquement */
+        .time-only { 
+            font-size: 48px;        /* Taille ajustable selon vos besoins */
+            font-weight: bold; 
+            color: #005e95;         /* Couleur bleu standard ArcGIS, à modifier si besoin */
+            line-height: 1;         /* Réduit l'espace au-dessus/en-dessous */
         }
-        .label { font-size: 11px; color: #666; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
-        .time { font-size: 32px; font-weight: bold; color: #005e95; margin: 5px 0; }
-        .progress-bg { width: 100%; background: #eee; height: 6px; border-radius: 3px; overflow: hidden; }
-        .progress-fill { width: 100%; height: 100%; background: #007ac2; transition: width 1s linear; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="label">Prochaine Arrivée</div>
-        <div id="timer" class="time">04:00</div>
-        <div class="progress-bg">
-            <div id="fill" class="progress-fill"></div>
-        </div>
-    </div>
+    
+    <div id="timer" class="time-only">04:00</div>
 
     <script>
-        const DURATION = 240; // 4 minutes
-        let time = DURATION;
+        const DURATION = 240; // 4 minutes en secondes
+        let timeRemaining = DURATION;
         const display = document.getElementById('timer');
-        const fill = document.getElementById('fill');
 
         function startTimer() {
+            // Exécute la fonction toutes les secondes
             setInterval(() => {
-                time--;
-                if (time < 0) time = DURATION;
+                timeRemaining--;
 
-                let mins = Math.floor(time / 60);
-                let secs = time % 60;
+                // Logique de boucle
+                if (timeRemaining < 0) {
+                    timeRemaining = DURATION; // Recommence à 4:00
+                }
+
+                // Calcul minutes et secondes
+                let mins = Math.floor(timeRemaining / 60);
+                let secs = timeRemaining % 60;
+
+                // Affichage formaté (ex: 03:09)
                 display.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
                 
-                let percent = (time / DURATION) * 100;
-                fill.style.width = percent + "%";
             }, 1000);
         }
+
+        // Lance le timer au chargement de la page
         window.onload = startTimer;
     </script>
 </body>
